@@ -7,12 +7,21 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Job } from "@/types";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import jobData from "@/../data/jobs.json";
 
 const colHelper = createColumnHelper<Job>();
 
 const columns = [
   colHelper.accessor("company", {
+    header: "Company",
     cell: (info) => (
       <SimpleLinkCell
         name={info.getValue().name}
@@ -21,6 +30,7 @@ const columns = [
     ),
   }),
   colHelper.accessor("jobs", {
+    header: "Jobs",
     cell: (info) => {
       return (
         <div className="flex flex-col">
@@ -31,10 +41,18 @@ const columns = [
       );
     },
   }),
+  colHelper.accessor("note", {
+    header: "Note",
+    cell: (info) => info.getValue(),
+  }),
 ];
 
 function SimpleLinkCell({ name, href }: { name: string; href: string }) {
-  return <a href={href} target="_blank">{name}</a>;
+  return (
+    <a href={href} target="_blank" className="text-blue-600 hover:underline">
+      {name}
+    </a>
+  );
 }
 
 export function JobTable() {
@@ -46,33 +64,33 @@ export function JobTable() {
 
   return (
     <div className="p-4">
-      <table>
-        <thead>
+      <Table>
+        <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <TableHead key={header.id}>
                   {header.isPlaceholder ? null : flexRender(
                     header.column.columnDef.header,
                     header.getContext(),
                   )}
-                </th>
+                </TableHead>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </thead>
-        <tbody>
+        </TableHeader>
+        <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <TableRow key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }
